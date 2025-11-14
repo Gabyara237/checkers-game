@@ -36,9 +36,39 @@ let blackPiecesCount = 12;    // Variable to track the number of black player's 
 const gameBoard = document.querySelector(".board");
 const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
+console.log(squares);
 const buttonReset = document.querySelector("#btn");
 
 /*-------------------------------- Functions --------------------------------*/
+
+const initializeBoard = () => {
+
+    board.forEach((rows, rowIndex) => {
+        rows.forEach((column,columnIndex) =>{
+            if(rowIndex <= 2){
+                if((rowIndex%2 == 0 )&& (columnIndex%2 !==0)){
+                    board[rowIndex][columnIndex] = "b";
+                   
+                }else if( (rowIndex % 2 !==0) && (columnIndex%2 == 0)){
+                    board[rowIndex][columnIndex] = "b";                
+                }
+
+            }else if(rowIndex >=5){
+                if((rowIndex%2 == 0 )&& (columnIndex%2 !==0)){
+                    board[rowIndex][columnIndex] = "w";
+                   
+                }else if( (rowIndex % 2 !==0) && (columnIndex%2 == 0)){
+                    board[rowIndex][columnIndex] = "w";                
+                }
+
+            }
+        })
+    })  
+    console.log(board);  
+}
+
+
+initializeBoard();
 
 const render = () =>{
    
