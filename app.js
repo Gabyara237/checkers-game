@@ -67,8 +67,44 @@ const initializeBoard = () => {
     console.log(board);  
 }
 
+const convertIndexesToId = (rowIndex,columnIndex) => {
+    return rowIndex*8 + columnIndex;
+}
+
+const createImgElement = (piece) => {
+    const imgPiece = document.createElement("img");
+    if (piece === "b"){
+        console.log("entre")
+        imgPiece.src = "./images/black-piece.png"
+        imgPiece.alt = "Black piece";
+    }else{
+        imgPiece.src = "./images/white-piece.png"
+        imgPiece.alt = "White piece";
+    }
+    return imgPiece;
+}
+
+const updateBoard = () => {
+    let indexSquare;
+    let imgPiece;
+    board.forEach((rows,rowIndex) => {
+        rows.forEach((piece,columnIndex)=>{
+            indexSquare = convertIndexesToId(rowIndex,columnIndex);
+            console.log(`esta es la pieza ${piece}`)
+            imgPiece = createImgElement(piece);
+            if(piece === "b"){
+                squares[indexSquare].appendChild(imgPiece)
+            }else if(piece === "w"){
+                squares[indexSquare].appendChild(createImgElement(imgPiece))
+            }
+        })
+    })
+}
+
 
 initializeBoard();
+updateBoard();
+
 
 const render = () =>{
    
