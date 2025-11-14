@@ -1,0 +1,17 @@
+.board{
+    display: flex;
+    flex-wrap: wrap;
+    width: 800px;
+
+}
+
+.squares{
+    background-color: #ffedcf;
+    border: 1px solid black;
+    width: 90px;
+    height: 90px;
+}
+
+.playable{
+    background-color: #874822 ;
+}
