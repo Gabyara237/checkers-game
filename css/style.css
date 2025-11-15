@@ -14,4 +14,24 @@
 
 .playable{
     background-color: #874822 ;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
+
+img {
+    width: 80px;
+}
+
+.selectedPiece{
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  50% { 
+    transform: scale(1.1); 
+  }
+}
+
+

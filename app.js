@@ -36,6 +36,7 @@ let moveCountTie = 0;         // Variable that will count the number of non-capt
 let whitePiecesCount = 12;    // Variable to track the number of white player's pieces
 let blackPiecesCount = 12;    // Variable to track the number of black player's pieces
 let imgElementCreated = false;
+let selectedPiece = "";
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -45,6 +46,36 @@ const squares = document.querySelectorAll(".squares");
 const buttonReset = document.querySelector("#btn");
 
 /*-------------------------------- Functions --------------------------------*/
+
+const highlightSelectedPiece = (event) => {
+    let pieceElement = event.target;
+    if (pieceElement.classList.contains("piece")){
+        if (pieceElement.id === selectedPiece.id){
+            pieceElement.classList.remove("selectedPiece");
+            selectedPiece = "";
+
+        }else{
+            
+            pieceElement.classList.add("selectedPiece");
+            selectedPiece = pieceElement;
+        }
+    }
+}
+
+
+const handleClick = (event) => {
+
+    // Function that adds a class to the selected piece so that it stands out
+    highlightSelectedPiece(event);
+
+    // Function that identifies the available moves for the selected piece
+    // Function that moves the piece to the selected cell
+    // Check for crowning 
+    // Check if there is a winner
+    // Check if there is a tie
+
+}
+
 
 const initializeBoard = () => {
 
@@ -72,20 +103,27 @@ const initializeBoard = () => {
     // console.log(board);  
 }
 
+
+
+
 const convertIndexesToId = (rowIndex,columnIndex) => {
     return rowIndex*8 + columnIndex;
 }
 
-const createImgElement = (piece) => {
+const createImgElement = (piece, indexSquare) => {
     const imgPiece = document.createElement("img");
     if (piece === "b"){
         // console.log("test")
         imgPiece.src = infoImgsPieces[1].blackUrl;
         imgPiece.alt =  infoImgsPieces[1].blackAlt;
+        
     }else{
         imgPiece.src =  infoImgsPieces[0].whiteUrl;
         imgPiece.alt = infoImgsPieces[0].whiteAlt;
-    }
+    }       
+        imgPiece.id = indexSquare;
+        imgPiece.classList = "piece";
+
     return imgPiece;
 }
 
@@ -97,7 +135,7 @@ const updateBoard = () => {
         board.forEach((rows,rowIndex) => {
             rows.forEach((piece,columnIndex)=>{
                 indexSquare = convertIndexesToId(rowIndex,columnIndex);
-                imgPiece = createImgElement(piece);
+                imgPiece = createImgElement(piece, indexSquare);
                 if(piece === "b"){
                     squares[indexSquare].appendChild(imgPiece);
                 }else if(piece === "w"){
@@ -153,6 +191,12 @@ const init = () =>{
 
 init()
 /*----------------------------- Event Listeners -----------------------------*/
+
+
+gameBoard.addEventListener('click', (event) =>{
+     handleClick(event);
+
+})
 
 
 /* Pseudocode
