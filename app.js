@@ -1,7 +1,12 @@
 
 /*-------------------------------- Constants --------------------------------*/
 
-
+const infoImgsPieces =[
+    {whiteUrl: "./images/white-piece.png", whiteAlt: "White Piece"},
+    {blackUrl: "./images/black-piece.png", blackAlt: "Black Piece"},
+    {whiteKingUrl: "./images/white-king.png", whiteKingAlt: "White King Piece"},
+    {blackKingUrl: "./images/black-king.png", blackKingAlt: "Black King Piece"}
+]
 
 /*---------------------------- Variables (state) ----------------------------*/
 
@@ -30,13 +35,13 @@ let tie = false ;       // Variable to detect a tie. It will be `false`, as long
 let moveCountTie = 0;         // Variable that will count the number of non-capture movements of kings.   
 let whitePiecesCount = 12;    // Variable to track the number of white player's pieces
 let blackPiecesCount = 12;    // Variable to track the number of black player's pieces
- 
+let imgElementCreated = false;
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
 const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
-console.log(squares);
+// console.log(squares);
 const buttonReset = document.querySelector("#btn");
 
 /*-------------------------------- Functions --------------------------------*/
@@ -64,7 +69,7 @@ const initializeBoard = () => {
             }
         })
     })  
-    console.log(board);  
+    // console.log(board);  
 }
 
 const convertIndexesToId = (rowIndex,columnIndex) => {
@@ -74,12 +79,12 @@ const convertIndexesToId = (rowIndex,columnIndex) => {
 const createImgElement = (piece) => {
     const imgPiece = document.createElement("img");
     if (piece === "b"){
-        console.log("entre")
-        imgPiece.src = "./images/black-piece.png"
-        imgPiece.alt = "Black piece";
+        // console.log("test")
+        imgPiece.src = infoImgsPieces[1].blackUrl;
+        imgPiece.alt =  infoImgsPieces[1].blackAlt;
     }else{
-        imgPiece.src = "./images/white-piece.png"
-        imgPiece.alt = "White piece";
+        imgPiece.src =  infoImgsPieces[0].whiteUrl;
+        imgPiece.alt = infoImgsPieces[0].whiteAlt;
     }
     return imgPiece;
 }
@@ -87,18 +92,48 @@ const createImgElement = (piece) => {
 const updateBoard = () => {
     let indexSquare;
     let imgPiece;
-    board.forEach((rows,rowIndex) => {
-        rows.forEach((piece,columnIndex)=>{
-            indexSquare = convertIndexesToId(rowIndex,columnIndex);
-            console.log(`esta es la pieza ${piece}`)
-            imgPiece = createImgElement(piece);
-            if(piece === "b"){
-                squares[indexSquare].appendChild(imgPiece)
-            }else if(piece === "w"){
-                squares[indexSquare].appendChild(createImgElement(imgPiece))
-            }
+    let img;
+    if(imgElementCreated === false){
+        board.forEach((rows,rowIndex) => {
+            rows.forEach((piece,columnIndex)=>{
+                indexSquare = convertIndexesToId(rowIndex,columnIndex);
+                imgPiece = createImgElement(piece);
+                if(piece === "b"){
+                    squares[indexSquare].appendChild(imgPiece);
+                }else if(piece === "w"){
+                    squares[indexSquare].appendChild(createImgElement(imgPiece));
+                }
+
+            })
+        }) 
+        imgElementCreated = true;     
+    }else{
+        board.forEach((rows,rowIndex) => {
+            rows.forEach((piece,columnIndex)=>{
+                indexSquare = convertIndexesToId(rowIndex,columnIndex);
+                img = squares[indexSquare].querySelector("img");
+                if(piece === "b"){
+                    img.setAttribute("url",infoImgsPieces[1].blackUrl);
+                    img.setAttribute("alt",infoImgsPieces[1].blackAlt);
+                    console.log(img)
+
+                }else if(piece === "w"){
+                    img.setAttribute("url",infoImgsPieces[0].whiteUrl);
+                    img.setAttribute("alt",infoImgsPieces[0].whiteAlt);
+
+                }else if(piece === "wk"){
+                    img.setAttribute("url",infoImgsPieces[0].whiteKingUrl);
+                    img.setAttribute("alt",infoImgsPieces[0].whiteKingAlt);
+
+                }else if(piece === "bk"){
+                    img.setAttribute("url",infoImgsPieces[0].blackKingUrl);
+                    img.setAttribute("alt",infoImgsPieces[0].blackKingAlt);
+                }
+
+            })
         })
-    })
+    }
+    // console.log(imgElementCreated)
 }
 
 
@@ -106,12 +141,13 @@ initializeBoard();
 updateBoard();
 
 
+
 const render = () =>{
    
 }
 
 const init = () =>{
-    console.log("test");
+    // console.log("test");
     render();
 }
 
