@@ -37,6 +37,7 @@ let whitePiecesCount = 12;    // Variable to track the number of white player's 
 let blackPiecesCount = 12;    // Variable to track the number of black player's pieces
 let imgElementCreated = false;
 let selectedPiece = "";
+let idToIndex = {};            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -47,33 +48,82 @@ const buttonReset = document.querySelector("#btn");
 
 /*-------------------------------- Functions --------------------------------*/
 
-const highlightSelectedPiece = (event) => {
-    let pieceElement = event.target;
-    if (pieceElement.classList.contains("piece")){
-        if (pieceElement.id === selectedPiece.id){
-            pieceElement.classList.remove("selectedPiece");
-            selectedPiece = "";
 
-        }else{
-            
-            pieceElement.classList.add("selectedPiece");
-            selectedPiece = pieceElement;
+
+const getAvailablePositions = (row, column, piece) =>{
+    let available = {}
+        if (piece === "b"){
+            available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1}
+            available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1}
+        }else  if (piece === "w"){
+            available["leftSide"] =  {rowIndex: row - 1, columnIndex: column - 1}
+            available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1}
         }
-    }
+    return available;
+    
 }
 
 
+const availableMovements = (pieceElement) =>{ 
+
+    let idElement = pieceElement.id
+    console.log(idElement)
+    let indexBoard = idToIndex[parseInt(pieceElement.id)]
+    console.log(indexBoard);
+    // console.log(idToIndex[parseInt(pieceElement.id)])
+    let rowIndex = indexBoard.row;
+    let columnIndex = indexBoard.column;
+    let playerPiece = board[rowIndex][columnIndex];
+    // console.log(playerPiece)
+    let availablePositions = {}
+    if (playerPiece === "b" || playerPiece === "bk" ){
+        if(playerPiece === "b" && columnIndex!== 0 && columnIndex !== 7  && rowIndex !==7){
+            availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
+            
+        }else if(playerPiece=== "b"){
+            
+        }
+
+    }else if (playerPiece === "w" || playerPiece === "wk"){
+        if(playerPiece === "w" && columnIndex!== 0 && columnIndex !== 7 && rowIndex !==0 && rowIndex !==7){
+            availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
+
+        }else if (playerPiece === "w"){
+           
+        }
+    }
+    console.log(availablePositions);
+
+}
+
+const highlightSelectedPiece = (pieceElement) => {
+    
+    if (pieceElement.id === selectedPiece.id){
+        pieceElement.classList.remove("selectedPiece");
+        selectedPiece = "";
+
+    }else{
+            
+        pieceElement.classList.add("selectedPiece");
+        selectedPiece = pieceElement;
+    }
+    
+}
+
 const handleClick = (event) => {
+    let pieceElement = event.target;
+    console.log(pieceElement)
+    if (pieceElement.classList.contains("piece")){
+        // Function that adds a class to the selected piece so that it stands out
+        highlightSelectedPiece(pieceElement);
 
-    // Function that adds a class to the selected piece so that it stands out
-    highlightSelectedPiece(event);
-
-    // Function that identifies the available moves for the selected piece
-    // Function that moves the piece to the selected cell
-    // Check for crowning 
-    // Check if there is a winner
-    // Check if there is a tie
-
+        // Function that identifies the available moves for the selected piece
+        availableMovements(pieceElement);
+        // Function that moves the piece to the selected cell
+        // Check for crowning 
+        // Check if there is a winner
+        // Check if there is a tie
+    }
 }
 
 
@@ -107,7 +157,10 @@ const initializeBoard = () => {
 
 
 const convertIndexesToId = (rowIndex,columnIndex) => {
-    return rowIndex*8 + columnIndex;
+
+    const id = rowIndex * 8 + columnIndex
+    idToIndex[id]= {'row':rowIndex , 'column':columnIndex}
+    return id;
 }
 
 const createImgElement = (piece, indexSquare) => {
@@ -139,7 +192,7 @@ const updateBoard = () => {
                 if(piece === "b"){
                     squares[indexSquare].appendChild(imgPiece);
                 }else if(piece === "w"){
-                    squares[indexSquare].appendChild(createImgElement(imgPiece));
+                    squares[indexSquare].appendChild(imgPiece);
                 }
 
             })
