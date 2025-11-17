@@ -96,16 +96,18 @@ const availableMovements = (pieceElement) =>{
 
 }
 
-const highlightSelectedPiece = (pieceElement) => {
-    
-    if (pieceElement.id === selectedPiece.id){
-        pieceElement.classList.remove("selectedPiece");
-        selectedPiece = "";
+const highlight = (element,toBeHighlighted) => {
+   
+    if( toBeHighlighted ==="selectedPieceElement"){ 
+        if (element.id === selectedPiece.id){
+            element.classList.remove("selectedPiece");
+            selectedPiece = "";
 
-    }else{
-            
-        pieceElement.classList.add("selectedPiece");
-        selectedPiece = pieceElement;
+        }else{
+                
+            element.classList.add("selectedPiece");
+            selectedPiece = element;
+        }   
     }
     
 }
@@ -115,7 +117,7 @@ const handleClick = (event) => {
     console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
         // Function that adds a class to the selected piece so that it stands out
-        highlightSelectedPiece(pieceElement);
+        highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
         availableMovements(pieceElement);
