@@ -38,6 +38,7 @@ let blackPiecesCount = 12;    // Variable to track the number of black player's 
 let imgElementCreated = false;
 let selectedPiece = "";
 let idToIndex = {};            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
+let indexsToId = {};
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -79,6 +80,7 @@ const availableMovements = (pieceElement) =>{
     if (playerPiece === "b" || playerPiece === "bk" ){
         if(playerPiece === "b" && columnIndex!== 0 && columnIndex !== 7  && rowIndex !==7){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
+
             
         }else if(playerPiece=== "b"){
             
@@ -92,13 +94,13 @@ const availableMovements = (pieceElement) =>{
            
         }
     }
-    console.log(availablePositions);
+    return availablePositions;
 
 }
 
 const highlight = (element,toBeHighlighted) => {
    
-    if( toBeHighlighted ==="selectedPieceElement"){ 
+    if (toBeHighlighted ==="selectedPieceElement"){ 
         if (element.id === selectedPiece.id){
             element.classList.remove("selectedPiece");
             selectedPiece = "";
@@ -108,19 +110,26 @@ const highlight = (element,toBeHighlighted) => {
             element.classList.add("selectedPiece");
             selectedPiece = element;
         }   
+    }else if (toBeHighlighted === "availableMoves"){
+
     }
     
 }
 
 const handleClick = (event) => {
     let pieceElement = event.target;
+    let availablePositions = {}
     console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
         // Function that adds a class to the selected piece so that it stands out
         highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
-        availableMovements(pieceElement);
+        availablePositions = availableMovements(pieceElement);
+
+        if (availablePositions){
+            highlight(availablePositions, "availableMoves")
+        }
         // Function that moves the piece to the selected cell
         // Check for crowning 
         // Check if there is a winner
@@ -162,6 +171,9 @@ const convertIndexesToId = (rowIndex,columnIndex) => {
 
     const id = rowIndex * 8 + columnIndex
     idToIndex[id]= {'row':rowIndex , 'column':columnIndex}
+    indexsToId[`${rowIndex}-${columnIndex}`] = id;
+    console.log(indexsToId);
+    // console.log(idToIndex);
     return id;
 }
 
