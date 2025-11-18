@@ -39,6 +39,7 @@ let imgElementCreated = false;
 let selectedPiece = "";
 let idToIndex = {};            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
 let indexsToId = {};
+let movementOptions = null;
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -94,41 +95,83 @@ const availableMovements = (pieceElement) =>{
            
         }
     }
+    movementOptions = availablePositions;
     return availablePositions;
 
 }
 
+const iterateOverMovementOptions = ((movementsOption, action)=>{
+    console.log(action)
+    console.log(movementsOption);
+    for (let key in movementsOption){
+        const object = movementsOption[key];
+        const row = object.rowIndex;
+        const column = object.columnIndex;
+            
+        console.log(board[row][column])
+        if(action === "add"){
+
+            if(board[row][column] === ""){
+                id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
+                console.log(id)
+                const squaresAvailableToMove = document.getElementById(id);
+                squaresAvailableToMove.classList.add("movedOption");
+                   
+            }
+                
+        }else if(action === "remove"){
+            id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
+            console.log(`remove : ${id}`)
+            const squaresAvailableToMove = document.getElementById(id);
+            squaresAvailableToMove.classList.remove("movedOption");
+            console.log(squaresAvailableToMove);
+        }
+    }
+})
+
+
+
 const highlight = (element,toBeHighlighted) => {
-   
-    if (toBeHighlighted ==="selectedPieceElement"){ 
+   console.log(toBeHighlighted);
+    if (toBeHighlighted === "selectedPieceElement"){ 
+        
         if (element.id === selectedPiece.id){
             element.classList.remove("selectedPiece");
             selectedPiece = "";
+            if (movementOptions){
+                iterateOverMovementOptions(movementOptions,"remove");
+                movementOptions = null;
+            }
 
         }else{
                 
             element.classList.add("selectedPiece");
             selectedPiece = element;
         }   
-    }else if (toBeHighlighted === "availableMoves"){
 
+    }else if (toBeHighlighted === "availableMoves"  ){
+
+        iterateOverMovementOptions(element,"add");
+       
     }
     
 }
 
 const handleClick = (event) => {
     let pieceElement = event.target;
-    let availablePositions = {}
     console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
         // Function that adds a class to the selected piece so that it stands out
         highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
-        availablePositions = availableMovements(pieceElement);
-
-        if (availablePositions){
-            highlight(availablePositions, "availableMoves")
+        if(pieceElement.classList.contains("selectedPiece")){
+            movementOptions = availableMovements(pieceElement);
+            console.log(movementOptions);
+        }
+        
+        if (movementOptions){
+            highlight(movementOptions, "availableMoves")
         }
         // Function that moves the piece to the selected cell
         // Check for crowning 
@@ -172,7 +215,7 @@ const convertIndexesToId = (rowIndex,columnIndex) => {
     const id = rowIndex * 8 + columnIndex
     idToIndex[id]= {'row':rowIndex , 'column':columnIndex}
     indexsToId[`${rowIndex}-${columnIndex}`] = id;
-    console.log(indexsToId);
+    // console.log(indexsToId);
     // console.log(idToIndex);
     return id;
 }

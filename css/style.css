@@ -24,6 +24,10 @@ img {
     width: 80px;
 }
 
+.movedOption{
+    background-color: green;
+}
+
 .selectedPiece{
   animation: pulse 2s infinite;
 }
