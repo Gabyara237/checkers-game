@@ -32,6 +32,11 @@ img {
   animation: pulse 2s infinite;
 }
 
+.disableUnselectedPiece {
+    pointer-events: none;
+    
+}
+
 @keyframes pulse {
   50% { 
     transform: scale(1.1); 

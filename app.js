@@ -50,7 +50,31 @@ const buttonReset = document.querySelector("#btn");
 
 /*-------------------------------- Functions --------------------------------*/
 
-
+const disableUnselectedPieces = () => {
+    if(selectedPiece !== ""){
+        let permittedIds = []
+        for (let key in movementOptions){
+            const object = movementOptions[key];
+            const row = object.rowIndex;
+            const column = object.columnIndex;
+            const id = indexsToId[`${object.rowIndex}-${object.columnIndex}`];
+            permittedIds.push(id);
+        }
+        permittedIds.push(parseInt(selectedPiece.id));
+        console.log(permittedIds)
+        squares.forEach((square) => {
+            if(!(permittedIds.includes(parseInt(square.id))) ){
+                square.classList.add("disableUnselectedPiece")
+            }
+        })
+    }else if (selectedPiece === ""){
+        squares.forEach((square) => {
+            if(square.classList.contains("disableUnselectedPiece")){
+                square.classList.remove("disableUnselectedPiece")
+            }
+        })
+    }
+}
 
 const getAvailablePositions = (row, column, piece) =>{
     let available = {}
@@ -64,7 +88,6 @@ const getAvailablePositions = (row, column, piece) =>{
     return available;
     
 }
-
 
 const availableMovements = (pieceElement) =>{ 
 
@@ -82,8 +105,7 @@ const availableMovements = (pieceElement) =>{
         if(playerPiece === "b" && columnIndex!== 0 && columnIndex !== 7  && rowIndex !==7){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
 
-            
-        }else if(playerPiece=== "b"){
+        }else if(playerPiece === "b"){
             
         }
 
@@ -138,6 +160,7 @@ const highlight = (element,toBeHighlighted) => {
         if (element.id === selectedPiece.id){
             element.classList.remove("selectedPiece");
             selectedPiece = "";
+            disableUnselectedPieces();
             if (movementOptions){
                 iterateOverMovementOptions(movementOptions,"remove");
                 movementOptions = null;
@@ -169,9 +192,10 @@ const handleClick = (event) => {
             movementOptions = availableMovements(pieceElement);
             console.log(movementOptions);
         }
-        
         if (movementOptions){
-            highlight(movementOptions, "availableMoves")
+            highlight(movementOptions, "availableMoves");
+            // Function that disables the selection of other pieces when a piece has already been selected
+            disableUnselectedPieces();
         }
         // Function that moves the piece to the selected cell
         // Check for crowning 
