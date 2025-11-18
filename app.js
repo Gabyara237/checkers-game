@@ -47,8 +47,22 @@ const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
 // console.log(squares);
 const buttonReset = document.querySelector("#btn");
-
 /*-------------------------------- Functions --------------------------------*/
+
+
+const movePiece = (moveSelectedSquare) => {
+   
+    moveSelectedSquare.appendChild(selectedPiece);
+    selectedPiece.id = moveSelectedSquare.id;
+    console.log(selectedPiece.id);
+    console.log(selectedPiece)
+    iterateOverMovementOptions(movementOptions,"remove");
+    disableUnselectedPieces();
+    highlight(selectedPiece,"selectedPieceElement");
+  
+
+}
+
 
 const disableUnselectedPieces = () => {
     if(selectedPiece !== ""){
@@ -61,12 +75,13 @@ const disableUnselectedPieces = () => {
             permittedIds.push(id);
         }
         permittedIds.push(parseInt(selectedPiece.id));
-        console.log(permittedIds)
+        // console.log(permittedIds)
         squares.forEach((square) => {
             if(!(permittedIds.includes(parseInt(square.id))) ){
                 square.classList.add("disableUnselectedPiece")
             }
         })
+        return permittedIds;
     }else if (selectedPiece === ""){
         squares.forEach((square) => {
             if(square.classList.contains("disableUnselectedPiece")){
@@ -92,9 +107,9 @@ const getAvailablePositions = (row, column, piece) =>{
 const availableMovements = (pieceElement) =>{ 
 
     let idElement = pieceElement.id
-    console.log(idElement)
+    // console.log(idElement)
     let indexBoard = idToIndex[parseInt(pieceElement.id)]
-    console.log(indexBoard);
+    // console.log(indexBoard);
     // console.log(idToIndex[parseInt(pieceElement.id)])
     let rowIndex = indexBoard.row;
     let columnIndex = indexBoard.column;
@@ -157,7 +172,7 @@ const highlight = (element,toBeHighlighted) => {
    console.log(toBeHighlighted);
     if (toBeHighlighted === "selectedPieceElement"){ 
         
-        if (element.id === selectedPiece.id){
+        if (element.id === selectedPiece.id ){
             element.classList.remove("selectedPiece");
             selectedPiece = "";
             disableUnselectedPieces();
@@ -184,23 +199,40 @@ const handleClick = (event) => {
     let pieceElement = event.target;
     console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
+        console.log("entre")
         // Function that adds a class to the selected piece so that it stands out
         highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
         if(pieceElement.classList.contains("selectedPiece")){
             movementOptions = availableMovements(pieceElement);
-            console.log(movementOptions);
+            // console.log(movementOptions);
         }
         if (movementOptions){
             highlight(movementOptions, "availableMoves");
             // Function that disables the selection of other pieces when a piece has already been selected
-            disableUnselectedPieces();
+            permittedIds = disableUnselectedPieces();
+            // Function that moves the piece to the selected cell
+
+
         }
-        // Function that moves the piece to the selected cell
+        
         // Check for crowning 
         // Check if there is a winner
         // Check if there is a tie
+    }
+
+    if(event.target.classList.contains("movedOption")){
+                
+        const moveSelectedSquare = event.target;
+        // console.log(moveSelectedSquare)
+        movePiece(moveSelectedSquare);
+        selectedPiece = "";
+        iterateOverMovementOptions
+        movementOptions = null;
+        
+
+
     }
 }
 
