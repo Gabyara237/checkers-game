@@ -40,6 +40,8 @@ let selectedPiece = "";
 let idToIndex = {};            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
 let indexsToId = {};
 let movementOptions = null;
+let capturedPiece = null;
+
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -84,7 +86,7 @@ const movePiece = (moveSelectedSquare) => {
     
     selectedPiece.id = moveSelectedSquare.id;
     // console.log(selectedPiece.id);
-    console.log(selectedPiece)
+    console.log(`Selected Piece: ${selectedPiece}`)
  
    positionBoard = idToIndex[parseInt(selectedPiece.id)];
 
@@ -94,10 +96,21 @@ const movePiece = (moveSelectedSquare) => {
         board[positionBoard.row][positionBoard.column] = "b";
     }
     
-    console.log(positionBoard);
+    // console.log(positionBoard);
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
     highlight(selectedPiece,"selectedPieceElement");
+
+    if (capturedPiece){
+        positionBoard = idToIndex[parseInt(capturedPiece.id)];
+        board[positionBoard.row][positionBoard.column] = "";
+        capturedPiece.children[0].classList.add("capturedPiece");
+        const img = capturedPiece.children[0];
+        capturedPiece.removeChild(img);
+        capturedPiece = null;
+        console.log(board);
+    }
+    
     
     if(turn === "white"){
         turn = "black";
@@ -105,7 +118,7 @@ const movePiece = (moveSelectedSquare) => {
         turn = "white";
     }
     manageGameTurns();
-    console.log(board)
+    // console.log(board)
 }
 
 
@@ -183,14 +196,20 @@ const availableMovements = (pieceElement) =>{
 }
 
 const iterateOverMovementOptions = ((movementsOption, action)=>{
-    console.log(action)
-    console.log(movementsOption);
+    // console.log(action)
+    // console.log(movementsOption);
     for (let key in movementsOption){
         const object = movementsOption[key];
         const row = object.rowIndex;
         const column = object.columnIndex;
-            
-        console.log(board[row][column])
+        let indexBoardSelectPieces;
+        if(selectedPiece){
+            const idSelectPiece = selectedPiece.id;
+            indexBoardSelectPieces = idToIndex[idSelectPiece];
+            console.log(indexBoardSelectPieces); 
+        }
+
+        // console.log(board[row][column])
         if(action === "add"){
 
             if(board[row][column] === ""){
@@ -199,14 +218,47 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 const squaresAvailableToMove = document.getElementById(id);
                 squaresAvailableToMove.classList.add("movedOption");
                    
-            }
+            }else if(turn === "white" ){
+                
+                if(board[row][column] === "b" && board[row-1][column+1]== ""){
+                    // console.log(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column ===column-1);
+                    
+                    if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
+                        console.log("Capture available right");
+                        id = indexsToId[`${row-1}-${column+1}`];
+                        
+                        const squaresAvailableToMove = document.getElementById(id);
+                        squaresAvailableToMove.classList.add("movedOption");
+                        movementOptions.rightSide = {rowIndex: row-1, columnIndex: column+1};
+
+                        const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                        capturedPiece = document.getElementById(idCapturedPiece);
+                        console.log(movementOptions);
+                    }
+                } 
+                if (board[row][column] === "b" && board[row-1][column-1]== ""){
+                    console.log(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column ===column+1);
+                    if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
+                        console.log("Capture available left");
+                        id = indexsToId[`${row-1}-${column-1}`];
+                        
+                        const squaresAvailableToMove = document.getElementById(id);
+                        squaresAvailableToMove.classList.add("movedOption");
+                        movementOptions.leftSide = {rowIndex: row-1, columnIndex: column-1};
+
+                        const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                        capturedPiece = document.getElementById(idCapturedPiece);
+                        console.log(movementOptions);
+                    }
+                }
+            } 
                 
         }else if(action === "remove"){
             id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
-            console.log(`remove : ${id}`)
+            // console.log(`remove : ${id}`)
             const squaresAvailableToMove = document.getElementById(id);
             squaresAvailableToMove.classList.remove("movedOption");
-            console.log(squaresAvailableToMove);
+            // console.log(squaresAvailableToMove);
         }
     }
 })
@@ -214,7 +266,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
 
 const highlight = (element,toBeHighlighted) => {
-   console.log(toBeHighlighted);
+//    console.log(toBeHighlighted);
     if (toBeHighlighted === "selectedPieceElement"){ 
         
         if (element.id === selectedPiece.id ){
@@ -242,27 +294,29 @@ const highlight = (element,toBeHighlighted) => {
     
 }
 
+const checkPieceCaptures = () =>{
+
+}
+
 const handleClick = (event) => {
     let pieceElement = event.target;
-    console.log(pieceElement)
+    // console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
         // Function that adds a class to the selected piece so that it stands out
         highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
         if(pieceElement.classList.contains("selectedPiece")){
-            console.log("entre aqui cuando selectedPiace esta el la clase")
             movementOptions = availableMovements(pieceElement);
             console.log(movementOptions)
             // console.log(movementOptions);
         }
+        //Check for piece captures
+        
         if (movementOptions){
             highlight(movementOptions, "availableMoves");
             // Function that disables the selection of other pieces when a piece has already been selected
             permittedIds = disableUnselectedPieces();
-            // Function that moves the piece to the selected cell
-
-
         }
         
         // Check for crowning 
