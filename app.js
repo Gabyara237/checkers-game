@@ -77,6 +77,20 @@ const manageGameTurns = () =>{
     }
 }
 
+const checkCrowning = (row) =>{
+    if(turn === "white"){
+        if (row===0){
+            return true;
+        }
+    }else if(turn === "black" ){
+        if (row === 7){
+            return true;
+        }
+    }    
+    return false;
+}
+
+
 const movePiece = (moveSelectedSquare) => {
     console.log(board)
    
@@ -90,12 +104,26 @@ const movePiece = (moveSelectedSquare) => {
  
    positionBoard = idToIndex[parseInt(selectedPiece.id)];
 
+   isKing = checkCrowning(positionBoard.row);
     if (turn === "white"){
-        board[positionBoard.row][positionBoard.column] = "w";
+        if(isKing){
+            board[positionBoard.row][positionBoard.column] = "wk";
+            updateBoard();
+
+        }else{
+            board[positionBoard.row][positionBoard.column] = "w";
+        }
+
     }else{
+        if(isKing){
+            board[positionBoard.row][positionBoard.column] = "bk";
+            updateBoard();
+        }else{
+            board[positionBoard.row][positionBoard.column] = "b";
+        }
         board[positionBoard.row][positionBoard.column] = "b";
     }
-    
+    console.log(board);
     // console.log(positionBoard);
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
@@ -181,6 +209,9 @@ const getAvailablePositions = (row, column, piece) =>{
     return available;
     
 }
+
+
+
 
 const availableMovements = (pieceElement) =>{ 
 
@@ -429,10 +460,10 @@ const createImgElement = (piece, indexSquare) => {
         imgPiece.src = infoImgsPieces[1].blackUrl;
         imgPiece.alt =  infoImgsPieces[1].blackAlt;
         
-    }else{
+    }else if (piece === "w"){
         imgPiece.src =  infoImgsPieces[0].whiteUrl;
         imgPiece.alt = infoImgsPieces[0].whiteAlt;
-    }       
+    }     
         imgPiece.id = indexSquare;
         imgPiece.classList = "piece";
 
@@ -472,12 +503,12 @@ const updateBoard = () => {
                     img.setAttribute("alt",infoImgsPieces[0].whiteAlt);
 
                 }else if(piece === "wk"){
-                    img.setAttribute("url",infoImgsPieces[0].whiteKingUrl);
-                    img.setAttribute("alt",infoImgsPieces[0].whiteKingAlt);
+                    img.setAttribute("src",infoImgsPieces[2].whiteKingUrl);
+                    img.setAttribute("alt",infoImgsPieces[2].whiteKingAlt);
 
                 }else if(piece === "bk"){
-                    img.setAttribute("url",infoImgsPieces[0].blackKingUrl);
-                    img.setAttribute("alt",infoImgsPieces[0].blackKingAlt);
+                    img.setAttribute("src",infoImgsPieces[3].blackKingUrl);
+                    img.setAttribute("alt",infoImgsPieces[3].blackKingAlt);
                 }
 
             })
