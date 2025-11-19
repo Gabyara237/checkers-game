@@ -93,14 +93,13 @@ const checkCrowning = (row) =>{
 
 const movePiece = (moveSelectedSquare) => {
     console.log(board)
-   
     moveSelectedSquare.appendChild(selectedPiece);
     let positionBoard = idToIndex[parseInt(selectedPiece.id)];
     board[positionBoard.row][positionBoard.column] = "";
     
     selectedPiece.id = moveSelectedSquare.id;
     // console.log(selectedPiece.id);
-    console.log(`Selected Piece: ${selectedPiece}`)
+    console.log(`Selected Piece: ${selectedPiece.alt}`)
  
    positionBoard = idToIndex[parseInt(selectedPiece.id)];
 
@@ -110,7 +109,12 @@ const movePiece = (moveSelectedSquare) => {
             board[positionBoard.row][positionBoard.column] = "wk";
             updateBoard();
 
+        // }else if(selectedPiece){
+        }else if (selectedPiece.alt === "White King Piece") {
+            board[positionBoard.row][positionBoard.column] = "wk";
+            updateBoard();
         }else{
+
             board[positionBoard.row][positionBoard.column] = "w";
         }
 
@@ -118,10 +122,12 @@ const movePiece = (moveSelectedSquare) => {
         if(isKing){
             board[positionBoard.row][positionBoard.column] = "bk";
             updateBoard();
+        }else if (selectedPiece.alt === "Black King Piece") {
+            board[positionBoard.row][positionBoard.column] = "bk";
+            updateBoard();
         }else{
             board[positionBoard.row][positionBoard.column] = "b";
         }
-        board[positionBoard.row][positionBoard.column] = "b";
     }
     console.log(board);
     // console.log(positionBoard);
@@ -145,7 +151,7 @@ const movePiece = (moveSelectedSquare) => {
         turn = "white";
     }
     manageGameTurns();
-    // console.log(board)
+    console.log(board)
 }
 
 
@@ -179,7 +185,7 @@ const disableUnselectedPieces = () => {
 const getAvailablePositions = (row, column, piece) =>{
     let available = {}
     console.log(row)
-        if (piece === "b"){
+        if (piece === "b" || piece === "wk"){
             if(column===0){
                 available["leftSide"] = {rowIndex: row + 1, columnIndex: column + 1};
                 available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
@@ -192,9 +198,20 @@ const getAvailablePositions = (row, column, piece) =>{
                 available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1};
                 available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
             }
-        }else if (piece === "w"){
+            if(piece === "wk"){
+                if(column ===7){
+                available["downLeft"] =  {rowIndex: row - 1, columnIndex: column + 1};
+                available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1};
+                }else if (column === 0){
+                    available["downLeft"] =  {rowIndex: row - 1, columnIndex: column - 1}
+                    available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1}
+                }else{
+                    available["downLeft"] =  {rowIndex: row - 1, columnIndex: column - 1}
+                    available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1}
+                }
+            }
+        }else if (piece === "w" || piece === "bk"){
             if(column ===0){
-                console.log("entreen este")
                 available["leftSide"] =  {rowIndex: row - 1, columnIndex: column + 1};
                 available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1};
             }else if (column === 7){
@@ -203,6 +220,20 @@ const getAvailablePositions = (row, column, piece) =>{
             }else{
                 available["leftSide"] =  {rowIndex: row - 1, columnIndex: column - 1}
                 available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1}
+            }
+            if(piece === "bk"){
+                if(column===7){
+                available["upLeft"] = {rowIndex: row + 1, columnIndex: column + 1};
+                available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
+                }else if(column===0){
+                    console.log("entre")
+                    available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
+                    available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
+                }else{
+                    console.log("entre3")
+                    available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
+                    available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
+                }
             }
         }
         console.log(available);
@@ -225,20 +256,16 @@ const availableMovements = (pieceElement) =>{
     let playerPiece = board[rowIndex][columnIndex];
     // console.log(playerPiece)
     let availablePositions = {}
-    if (playerPiece === "b" || playerPiece === "bk" ){
-        if(playerPiece === "b"){
+    if (playerPiece === "b" || playerPiece === "wk" ){
+        if(playerPiece === "b" || playerPiece === "wk"){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
 
-        }else if(playerPiece === "b"){
-            
         }
 
-    }else if (playerPiece === "w" || playerPiece === "wk"){
-        if(playerPiece === "w" ){
+    }else if (playerPiece === "w" || playerPiece === "bk" ){
+        if(playerPiece === "w" || playerPiece === "bk" ){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
 
-        }else if (playerPiece === "w"){
-           
         }
     }
     movementOptions = availablePositions;
@@ -254,6 +281,9 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
         const row = object.rowIndex;
         const column = object.columnIndex;
         let indexBoardSelectPieces;
+        if (row < 0 || row > 7 || column < 0 || column > 7) {
+            continue; 
+        }
         if(selectedPiece){
             const idSelectPiece = selectedPiece.id;
             indexBoardSelectPieces = idToIndex[idSelectPiece];
@@ -270,8 +300,9 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 squaresAvailableToMove.classList.add("movedOption");
                    
             }else if(turn === "white" ){
+                
                 // Checking for possible captures
-                if(board[row][column] === "b" && board[row-1][column+1]== ""){
+                if(board[row][column] === "b" && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -286,7 +317,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if (board[row][column] === "b" && board[row-1][column-1]== ""){
+                if (board[row][column] === "b" && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
