@@ -135,14 +135,14 @@ const disableUnselectedPieces = () => {
         // console.log(permittedIds)
         squares.forEach((square) => {
             if(!(permittedIds.includes(parseInt(square.id))) ){
-                square.classList.add("disableUnselectedPiece")
+                square.classList.add("disableUnselectedPiece");
             }
         })
         return permittedIds;
     }else if (selectedPiece === ""){
         squares.forEach((square) => {
             if(square.classList.contains("disableUnselectedPiece")){
-                square.classList.remove("disableUnselectedPiece")
+                square.classList.remove("disableUnselectedPiece");
             }
         })
     }
@@ -150,13 +150,34 @@ const disableUnselectedPieces = () => {
 
 const getAvailablePositions = (row, column, piece) =>{
     let available = {}
+    console.log(row)
         if (piece === "b"){
-            available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1}
-            available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1}
-        }else  if (piece === "w"){
-            available["leftSide"] =  {rowIndex: row - 1, columnIndex: column - 1}
-            available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1}
+            if(column===0){
+                available["leftSide"] = {rowIndex: row + 1, columnIndex: column + 1};
+                available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
+            }else if(column===7){
+                console.log("entre")
+                available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1};
+                available["rightSide"] = {rowIndex: row + 1, columnIndex: column - 1};
+            }else{
+                console.log("entre3")
+                available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1};
+                available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
+            }
+        }else if (piece === "w"){
+            if(column ===0){
+                console.log("entreen este")
+                available["leftSide"] =  {rowIndex: row - 1, columnIndex: column + 1};
+                available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1};
+            }else if (column === 7){
+                available["leftSide"] =  {rowIndex: row - 1, columnIndex: column - 1}
+                available["rightSide"] = {rowIndex: row - 1, columnIndex: column - 1}
+            }else{
+                available["leftSide"] =  {rowIndex: row - 1, columnIndex: column - 1}
+                available["rightSide"] = {rowIndex: row - 1, columnIndex: column + 1}
+            }
         }
+        console.log(available);
     return available;
     
 }
@@ -174,7 +195,7 @@ const availableMovements = (pieceElement) =>{
     // console.log(playerPiece)
     let availablePositions = {}
     if (playerPiece === "b" || playerPiece === "bk" ){
-        if(playerPiece === "b" && columnIndex!== 0 && columnIndex !== 7  && rowIndex !==7){
+        if(playerPiece === "b"){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
 
         }else if(playerPiece === "b"){
@@ -182,7 +203,7 @@ const availableMovements = (pieceElement) =>{
         }
 
     }else if (playerPiece === "w" || playerPiece === "wk"){
-        if(playerPiece === "w" && columnIndex!== 0 && columnIndex !== 7 && rowIndex !==0 && rowIndex !==7){
+        if(playerPiece === "w" ){
             availablePositions = getAvailablePositions(rowIndex,columnIndex,playerPiece);
 
         }else if (playerPiece === "w"){
