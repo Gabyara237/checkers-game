@@ -76,20 +76,36 @@ const manageGameTurns = () =>{
 }
 
 const movePiece = (moveSelectedSquare) => {
+    console.log(board)
    
     moveSelectedSquare.appendChild(selectedPiece);
+    let positionBoard = idToIndex[parseInt(selectedPiece.id)];
+    board[positionBoard.row][positionBoard.column] = "";
+    
     selectedPiece.id = moveSelectedSquare.id;
-    console.log(selectedPiece.id);
+    // console.log(selectedPiece.id);
     console.log(selectedPiece)
+ 
+   positionBoard = idToIndex[parseInt(selectedPiece.id)];
+
+    if (turn === "white"){
+        board[positionBoard.row][positionBoard.column] = "w";
+    }else{
+        board[positionBoard.row][positionBoard.column] = "b";
+    }
+    
+    console.log(positionBoard);
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
     highlight(selectedPiece,"selectedPieceElement");
+    
     if(turn === "white"){
         turn = "black";
     }else{
         turn = "white";
     }
     manageGameTurns();
+    console.log(board)
 }
 
 
@@ -202,6 +218,7 @@ const highlight = (element,toBeHighlighted) => {
     if (toBeHighlighted === "selectedPieceElement"){ 
         
         if (element.id === selectedPiece.id ){
+            
             element.classList.remove("selectedPiece");
             selectedPiece = "";
             disableUnselectedPieces();
@@ -213,6 +230,7 @@ const highlight = (element,toBeHighlighted) => {
         }else{
                 
             element.classList.add("selectedPiece");
+
             selectedPiece = element;
         }   
 
@@ -228,13 +246,14 @@ const handleClick = (event) => {
     let pieceElement = event.target;
     console.log(pieceElement)
     if (pieceElement.classList.contains("piece")){
-        console.log("entre")
         // Function that adds a class to the selected piece so that it stands out
         highlight(pieceElement,"selectedPieceElement");
 
         // Function that identifies the available moves for the selected piece
         if(pieceElement.classList.contains("selectedPiece")){
+            console.log("entre aqui cuando selectedPiace esta el la clase")
             movementOptions = availableMovements(pieceElement);
+            console.log(movementOptions)
             // console.log(movementOptions);
         }
         if (movementOptions){
@@ -257,11 +276,8 @@ const handleClick = (event) => {
         // console.log(moveSelectedSquare)
         movePiece(moveSelectedSquare);
         selectedPiece = "";
-        iterateOverMovementOptions
         movementOptions = null;
         
-
-
     }
 }
 
