@@ -32,8 +32,9 @@ img {
   animation: pulse 2s infinite;
 }
 
-.disableUnselectedPiece {
-    pointer-events: none;
+.disableUnselectedPiece, .disableOpponentsPiece {
+    pointer-events: none !important;
+    opacity: '0.5';
     
 }
 

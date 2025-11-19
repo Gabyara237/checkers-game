@@ -49,6 +49,31 @@ const squares = document.querySelectorAll(".squares");
 const buttonReset = document.querySelector("#btn");
 /*-------------------------------- Functions --------------------------------*/
 
+const manageGameTurns = () =>{
+    const imgs = document.querySelectorAll(".piece"); 
+    message.textContent =`It is the ${turn} pieces' turn to play.`
+    if (turn === "white"){
+
+        imgs.forEach((img) =>{
+            if(img.alt === "White Piece"){
+                img.classList.remove("disableOpponentsPiece")
+            }
+            if(img.alt === "Black Piece"){
+                img.classList.add("disableOpponentsPiece")
+            }
+        })
+
+    }else{
+        imgs.forEach((img) =>{
+            if(img.alt === "Black Piece"){
+                img.classList.remove("disableOpponentsPiece")
+            }
+            if(img.alt === "White Piece"){
+                img.classList.add("disableOpponentsPiece")
+            }
+        })
+    }
+}
 
 const movePiece = (moveSelectedSquare) => {
    
@@ -59,8 +84,12 @@ const movePiece = (moveSelectedSquare) => {
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
     highlight(selectedPiece,"selectedPieceElement");
-  
-
+    if(turn === "white"){
+        turn = "black";
+    }else{
+        turn = "white";
+    }
+    manageGameTurns();
 }
 
 
@@ -264,8 +293,6 @@ const initializeBoard = () => {
 }
 
 
-
-
 const convertIndexesToId = (rowIndex,columnIndex) => {
 
     const id = rowIndex * 8 + columnIndex
@@ -343,7 +370,7 @@ const updateBoard = () => {
 
 initializeBoard();
 updateBoard();
-
+manageGameTurns();
 
 
 const render = () =>{
