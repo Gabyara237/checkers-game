@@ -111,7 +111,6 @@ const movePiece = (moveSelectedSquare) => {
         console.log(board);
     }
     
-    
     if(turn === "white"){
         turn = "black";
     }else{
@@ -219,9 +218,8 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 squaresAvailableToMove.classList.add("movedOption");
                    
             }else if(turn === "white" ){
-                
+                // Checking for possible captures
                 if(board[row][column] === "b" && board[row-1][column+1]== ""){
-                    // console.log(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column ===column-1);
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -237,7 +235,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                     }
                 } 
                 if (board[row][column] === "b" && board[row-1][column-1]== ""){
-                    console.log(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column ===column+1);
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
@@ -251,6 +248,37 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 }
+            }else if(turn === "black"){
+                if(board[row][column] === "w" && board[row+1][column+1]== ""){
+                    
+                    if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
+                        console.log("Capture available right");
+                        id = indexsToId[`${row+1}-${column+1}`];
+                        
+                        const squaresAvailableToMove = document.getElementById(id);
+                        squaresAvailableToMove.classList.add("movedOption");
+                        movementOptions.rightSide = {rowIndex: row+1, columnIndex: column+1};
+
+                        const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                        capturedPiece = document.getElementById(idCapturedPiece);
+                        console.log(movementOptions);
+                    }
+                } 
+                if (board[row][column] === "w" && board[row+1][column-1]== ""){
+                    if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
+                        console.log("Capture available left");
+                        id = indexsToId[`${row+1}-${column-1}`];
+                        
+                        const squaresAvailableToMove = document.getElementById(id);
+                        squaresAvailableToMove.classList.add("movedOption");
+                        movementOptions.leftSide = {rowIndex: row+1, columnIndex: column-1};
+
+                        const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                        capturedPiece = document.getElementById(idCapturedPiece);
+                        console.log(movementOptions);
+                    }
+                }
+
             } 
                 
         }else if(action === "remove"){
