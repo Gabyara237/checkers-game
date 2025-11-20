@@ -322,9 +322,72 @@ const availableMovements = (pieceElement) =>{
 }
 
 const iterateOverMovementOptions = ((movementsOption, action)=>{
+
     // console.log(action)
     // console.log(movementsOption);
 
+    let posiblesCapturas = [];
+
+    for (let key in movementsOption){
+        const object = movementsOption[key];
+        const row = object.rowIndex;
+        const column = object.columnIndex;
+        let indexBoardSelectPieces;
+        if (row < 0 || row > 7 || column < 0 || column > 7) {
+            continue; 
+        }
+        if(selectedPiece){
+            const idSelectPiece = selectedPiece.id;
+            indexBoardSelectPieces = idToIndex[idSelectPiece];
+            console.log(indexBoardSelectPieces); 
+        }
+
+        // console.log(board[row][column])
+
+        if(turn === "white" ){
+                
+            // Checking for possible captures
+            if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
+                    
+                if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
+                    console.log("Capture available right");
+                    id = indexsToId[`${row-1}-${column+1}`];
+                        
+                    posiblesCapturas.push(id);
+                }
+            } 
+            if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
+                if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
+                    console.log("Capture available left");
+                    id = indexsToId[`${row-1}-${column-1}`];
+                        
+                    posiblesCapturas.push(id);
+                }
+            }
+        }else if(turn === "black"){
+            if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                    
+                if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
+                    console.log("Capture available right");
+                    id = indexsToId[`${row+1}-${column+1}`];
+                        
+                   posiblesCapturas.push(id);
+                }
+            } 
+            if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
+                    console.log("Capture available left");
+                    id = indexsToId[`${row+1}-${column-1}`];
+                        
+                    posiblesCapturas.push(id);
+                }
+            }
+
+        } 
+                
+    }
+
+    console.log(`El tamano del array es: ${posiblesCapturas.length}`);
 
     for (let key in movementsOption){
         const object = movementsOption[key];
@@ -343,19 +406,22 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
         // console.log(board[row][column])
         if(action === "add"){
 
-            if(board[row][column] === ""){
-                id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
-                console.log(id)
-                const squaresAvailableToMove = document.getElementById(id);
-                squaresAvailableToMove.classList.add("movedOption");
-                   
-            }else if(turn === "white" ){
+            if(posiblesCapturas.length==0){
+                if(board[row][column] === ""){
+                    id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
+                    console.log(id)
+                    const squaresAvailableToMove = document.getElementById(id);
+                    squaresAvailableToMove.classList.add("movedOption");
+                    
+                }
+            }
+
+            if(turn === "white" ){
                 
                 // Checking for possible captures
                 if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
-                        console.log("Capture available right");
                         id = indexsToId[`${row-1}-${column+1}`];
                         
                         const squaresAvailableToMove = document.getElementById(id);
@@ -369,7 +435,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 } 
                 if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
-                        console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
                         
                         const squaresAvailableToMove = document.getElementById(id);
@@ -385,7 +450,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
                     
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
-                        console.log("Capture available right");
                         id = indexsToId[`${row+1}-${column+1}`];
                         
                         const squaresAvailableToMove = document.getElementById(id);
@@ -399,7 +463,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 } 
                 if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
-                        console.log("Capture available left");
                         id = indexsToId[`${row+1}-${column-1}`];
                         
                         const squaresAvailableToMove = document.getElementById(id);

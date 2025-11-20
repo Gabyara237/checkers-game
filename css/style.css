@@ -40,7 +40,9 @@ img {
 .capturedPiece {
     animation: remove 0.9s ease-out forwards;
 }
-
+#resetBtn{
+    cursor: pointer;
+}
 @keyframes pulse {
   50% { 
     transform: scale(1.1); 
