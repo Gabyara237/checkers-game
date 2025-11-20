@@ -248,11 +248,11 @@ const getAvailablePositions = (row, column, piece) =>{
             }
             if(piece === "wk"){
                 if(column ===7){
-                available["downLeft"] =  {rowIndex: row - 1, columnIndex: column + 1};
-                available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1};
+                available["downLeft"] =  {rowIndex: row - 1, columnIndex: column -1 };
+                available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1};
                 }else if (column === 0){
-                    available["downLeft"] =  {rowIndex: row - 1, columnIndex: column - 1}
-                    available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1}
+                    available["downLeft"] =  {rowIndex: row - 1, columnIndex: column + 1}
+                    available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1}
                 }else{
                     available["downLeft"] =  {rowIndex: row - 1, columnIndex: column - 1}
                     available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1}
@@ -271,12 +271,12 @@ const getAvailablePositions = (row, column, piece) =>{
             }
             if(piece === "bk"){
                 if(column===7){
-                available["upLeft"] = {rowIndex: row + 1, columnIndex: column + 1};
-                available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
+                available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
+                available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
                 }else if(column===0){
                     console.log("entre")
-                    available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
-                    available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
+                    available["upLeft"] = {rowIndex: row + 1, columnIndex: column + 1};
+                    available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
                 }else{
                     console.log("entre3")
                     available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
@@ -419,9 +419,40 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
             }
 
             if(turn === "white" ){
+                if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "wk"){
+                    console.log(`tenemos una reina blanca`)
+                    if((board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                        
+                        if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
+                            id = indexsToId[`${row+1}-${column+1}`];
+                            
+                            const squaresAvailableToMove = document.getElementById(id);
+                            squaresAvailableToMove.classList.add("movedOption");
+                            movementOptions.downRight = {rowIndex: row+1, columnIndex: column+1};
+
+                            const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                            capturedPiece = document.getElementById(idCapturedPiece);
+                            console.log(movementOptions);
+                        }
+                    } 
+
+                    if ((board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                        if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
+                            id = indexsToId[`${row+1}-${column-1}`];
+                            
+                            const squaresAvailableToMove = document.getElementById(id);
+                            squaresAvailableToMove.classList.add("movedOption");
+                            movementOptions.downLeft= {rowIndex: row+1, columnIndex: column-1};
+
+                            const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                            capturedPiece = document.getElementById(idCapturedPiece);
+                            console.log(movementOptions);
+                        }
+                    }
                 
-                // Checking for possible captures
-                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
+                }
+
+                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && board[row-1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         id = indexsToId[`${row-1}-${column+1}`];
@@ -435,7 +466,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
+                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         id = indexsToId[`${row-1}-${column-1}`];
                         
@@ -449,6 +480,39 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                     }
                 }
             }else if(turn === "black"){
+
+                if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "bk"){
+                    if((board[row][column] === "w" || board[row][column] === "wk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && board[row-1][column+1]== ""){
+                    
+                        if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
+                            id = indexsToId[`${row-1}-${column+1}`];
+                            
+                            const squaresAvailableToMove = document.getElementById(id);
+                            squaresAvailableToMove.classList.add("movedOption");
+                            movementOptions.upRight = {rowIndex: row-1, columnIndex: column+1};
+
+                            const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                            capturedPiece = document.getElementById(idCapturedPiece);
+                            console.log(movementOptions);
+                        }
+                    } 
+                    if ((board[row][column] === "w" ||board[row][column] === "wk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
+                        if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
+                            id = indexsToId[`${row-1}-${column-1}`];
+                            
+                            const squaresAvailableToMove = document.getElementById(id);
+                            squaresAvailableToMove.classList.add("movedOption");
+                            movementOptions.upLeft = {rowIndex: row-1, columnIndex: column-1};
+
+                            const idCapturedPiece = indexsToId[`${row}-${column}`]; 
+                            capturedPiece = document.getElementById(idCapturedPiece);
+                            console.log(movementOptions);
+                        }
+                    }
+                
+                
+                
+                }
                 if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
                     
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
