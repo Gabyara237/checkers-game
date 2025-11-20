@@ -31,6 +31,7 @@ let idToIndex;            // Variable that stores the IDs of the board cells as 
 let indexsToId;
 let movementOptions;
 let capturedPiece;
+let onlyKingsBoard;
 
  
 /*------------------------ Cached Element References ------------------------*/
@@ -55,6 +56,17 @@ const cleanBoard = () =>{
              
     })
 } 
+const onlyCrownedPieces = () => {
+    board.forEach((rows) =>{
+        rows.forEach((item)=>{
+            if(item === "p" || item === "w"){
+                return false;
+            }
+        })
+    })
+    return true;
+}
+
 
 const disableAllPieces = () => {
     squares.forEach((square)=>{
@@ -75,6 +87,11 @@ const checkWinner = () =>{
     }
     return false;
 }
+
+ const displayTieMessage = () =>{
+    message.textContent = "There is no winner in this game; it was a tie";
+    disableAllPieces();
+ };
  
 
 const manageGameTurns = () =>{
@@ -139,11 +156,13 @@ const movePiece = (moveSelectedSquare) => {
         if(isKing){
             board[positionBoard.row][positionBoard.column] = "wk";
             updateBoard();
-
+            onlyKingsBoard = onlyCrownedPieces();
+            
         // }else if(selectedPiece){
         }else if (selectedPiece.alt === "White King Piece") {
             board[positionBoard.row][positionBoard.column] = "wk";
             updateBoard();
+            onlyKingsBoard = onlyCrownedPieces();
         }else{
 
             board[positionBoard.row][positionBoard.column] = "w";
@@ -153,9 +172,13 @@ const movePiece = (moveSelectedSquare) => {
         if(isKing){
             board[positionBoard.row][positionBoard.column] = "bk";
             updateBoard();
+            onlyKingsBoard = onlyCrownedPieces();
+
         }else if (selectedPiece.alt === "Black King Piece") {
             board[positionBoard.row][positionBoard.column] = "bk";
             updateBoard();
+            onlyKingsBoard = onlyCrownedPieces();
+
         }else{
             board[positionBoard.row][positionBoard.column] = "b";
         }
@@ -165,6 +188,18 @@ const movePiece = (moveSelectedSquare) => {
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
     highlight(selectedPiece,"selectedPieceElement");
+
+
+    if (onlyKingsBoard === true && capturedPiece === null){
+        moveCountTie++ ;
+        if (moveCountTie === 40){
+            tie = true;
+            displayTieMessage();
+        }
+    }else if(onlyKingsBoard === true && capturedPiece !== null){
+        moveCountTie = 0;
+    }
+
 
     if (capturedPiece){
         console.log(" hay una pieza que capturar")
@@ -748,7 +783,7 @@ const init = () =>{
     turn = "white" ; 
     winner = false ;   
     tie = false ;   
-    moveCountTie = 0    
+    moveCountTie = 0;    
     whitePiecesCount = 12;   
     blackPiecesCount = 12;  
     imgElementCreated = false;
@@ -757,6 +792,7 @@ const init = () =>{
     indexsToId = {};
     movementOptions = null;
     capturedPiece = null;
+    onlyKingsBoard = false;
 
     initializeBoard();
     updateBoard();
