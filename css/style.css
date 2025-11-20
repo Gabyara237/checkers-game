@@ -34,7 +34,7 @@ img {
 
 .disableUnselectedPiece, .disableOpponentsPiece, .disableAllPieces {
     pointer-events: none !important;
-    opacity: 0.6;
+    opacity: 0.8;
     
 }
 .capturedPiece {

@@ -18,29 +18,19 @@ const infoImgsPieces =[
     "wk" -> white King
     "bk" -> black King
 */   
-let board = [
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""],
-    ["","","","","","","",""]];
-
-
-let turn = "white" ;    // Variable storing the current player's turn, toggles between `white` and `black`.
-let winner = false ;    // Variable that will be `false` as long as there is no winner, if there is a winner its value will be `true`.
-let tie = false ;       // Variable to detect a tie. It will be `false`, as long as there is no tie, and will change to `true` when there is a tie.
-let moveCountTie = 0;         // Variable that will count the number of non-capture movements of kings.   
-let whitePiecesCount = 12;    // Variable to track the number of white player's pieces
-let blackPiecesCount = 12;    // Variable to track the number of black player's pieces
-let imgElementCreated = false;
-let selectedPiece = "";
-let idToIndex = {};            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
-let indexsToId = {};
-let movementOptions = null;
-let capturedPiece = null;
+let board;
+let turn ;    // Variable storing the current player's turn, toggles between `white` and `black`.
+let winner;    // Variable that will be `false` as long as there is no winner, if there is a winner its value will be `true`.
+let tie;       // Variable to detect a tie. It will be `false`, as long as there is no tie, and will change to `true` when there is a tie.
+let moveCountTie;         // Variable that will count the number of non-capture movements of kings.   
+let whitePiecesCount;    // Variable to track the number of white player's pieces
+let blackPiecesCount;    // Variable to track the number of black player's pieces
+let imgElementCreated;
+let selectedPiece;
+let idToIndex;            // Variable that stores the IDs of the board cells as keys and their location indexes in the matrix board as values.
+let indexsToId;
+let movementOptions;
+let capturedPiece;
 
  
 /*------------------------ Cached Element References ------------------------*/
@@ -49,8 +39,23 @@ const gameBoard = document.querySelector(".board");
 const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
 // console.log(squares);
-const buttonReset = document.querySelector("#btn");
+const buttonReset = document.querySelector("#resetBtn");
 /*-------------------------------- Functions --------------------------------*/
+
+const cleanBoard = () =>{
+    
+    squares.forEach((square)=>{
+        square.innerHTML = ""; 
+        square.classList.remove(
+            'disableAllPieces',
+            'disableUnselectedPiece', 
+            'movedOption',
+            'selectedPiece'
+        );  
+             
+    })
+} 
+
 const disableAllPieces = () => {
     squares.forEach((square)=>{
         square.classList.add("disableAllPieces");
@@ -60,12 +65,12 @@ const disableAllPieces = () => {
 const checkWinner = () =>{
     if (blackPiecesCount === 0){
         message.textContent = "Congratulations, the player with the white pieces has won.";
-        disableAllPieces()
+        disableAllPieces();
         return true;
 
     }else if (whitePiecesCount === 0){
         message.textContent = "Congratulations, the player with the black pieces has won."
-        disableAllPieces()
+        disableAllPieces();
         return true;
     }
     return false;
@@ -594,17 +599,39 @@ const updateBoard = () => {
 }
 
 
-initializeBoard();
-updateBoard();
-manageGameTurns();
-
-
 const render = () =>{
    
 }
 
 const init = () =>{
+    cleanBoard();
     // console.log("test");
+    board = [
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""],
+    ["","","","","","","",""]];
+
+    turn = "white" ; 
+    winner = false ;   
+    tie = false ;   
+    moveCountTie = 0    
+    whitePiecesCount = 12;   
+    blackPiecesCount = 12;  
+    imgElementCreated = false;
+    selectedPiece = "";
+    idToIndex = {};            
+    indexsToId = {};
+    movementOptions = null;
+    capturedPiece = null;
+
+    initializeBoard();
+    updateBoard();
+    manageGameTurns();
     render();
 }
 
@@ -617,6 +644,9 @@ gameBoard.addEventListener('click', (event) =>{
 
 })
 
+resetBtn.addEventListener('click', (event) =>{
+    init()
+} )
 
 /* Pseudocode
 
