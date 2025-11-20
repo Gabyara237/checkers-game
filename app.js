@@ -344,47 +344,49 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
         // console.log(board[row][column])
 
-        if(turn === "white" ){
-                
-            // Checking for possible captures
-            if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
+        if(action === "add"){
+            if(turn === "white" ){
                     
-                if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
-                    console.log("Capture available right");
-                    id = indexsToId[`${row-1}-${column+1}`];
+                // Checking for possible captures
+                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
                         
+                    if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
+                        console.log("Capture available right");
+                        id = indexsToId[`${row-1}-${column+1}`];
+                            
+                        posiblesCapturas.push(id);
+                    }
+                } 
+                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
+                    if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
+                        console.log("Capture available left");
+                        id = indexsToId[`${row-1}-${column-1}`];
+                            
+                        posiblesCapturas.push(id);
+                    }
+                }
+            }else if(turn === "black"){
+                if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                        
+                    if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
+                        console.log("Capture available right");
+                        id = indexsToId[`${row+1}-${column+1}`];
+                            
                     posiblesCapturas.push(id);
+                    }
+                } 
+                if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                    if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
+                        console.log("Capture available left");
+                        id = indexsToId[`${row+1}-${column-1}`];
+                            
+                        posiblesCapturas.push(id);
+                    }
                 }
-            } 
-            if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
-                if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
-                    console.log("Capture available left");
-                    id = indexsToId[`${row-1}-${column-1}`];
-                        
-                    posiblesCapturas.push(id);
-                }
-            }
-        }else if(turn === "black"){
-            if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
-                    
-                if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
-                    console.log("Capture available right");
-                    id = indexsToId[`${row+1}-${column+1}`];
-                        
-                   posiblesCapturas.push(id);
-                }
-            } 
-            if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
-                if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
-                    console.log("Capture available left");
-                    id = indexsToId[`${row+1}-${column-1}`];
-                        
-                    posiblesCapturas.push(id);
-                }
-            }
 
-        } 
-                
+            } 
+                    
+        }
     }
 
     console.log(`El tamano del array es: ${posiblesCapturas.length}`);
