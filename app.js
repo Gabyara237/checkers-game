@@ -42,6 +42,7 @@ let indexsToId = {};
 let movementOptions = null;
 let capturedPiece = null;
 
+ 
 /*------------------------ Cached Element References ------------------------*/
 
 const gameBoard = document.querySelector(".board");
@@ -50,30 +51,55 @@ const squares = document.querySelectorAll(".squares");
 // console.log(squares);
 const buttonReset = document.querySelector("#btn");
 /*-------------------------------- Functions --------------------------------*/
+const disableAllPieces = () => {
+    squares.forEach((square)=>{
+        square.classList.add("disableAllPieces");
+    })
+} 
+
+const checkWinner = () =>{
+    if (blackPiecesCount === 0){
+        message.textContent = "Congratulations, the player with the white pieces has won.";
+        disableAllPieces()
+        return true;
+
+    }else if (whitePiecesCount === 0){
+        message.textContent = "Congratulations, the player with the black pieces has won."
+        disableAllPieces()
+        return true;
+    }
+    return false;
+}
+ 
 
 const manageGameTurns = () =>{
     const imgs = document.querySelectorAll(".piece"); 
-    message.textContent =`It is the ${turn} pieces' turn to play.`
-    if (turn === "white"){
+    const hasWinner = checkWinner();
+    console.log(`hay ganador? ${hasWinner}`)
 
-        imgs.forEach((img) =>{
-            if(img.alt === "White Piece" || img.alt === "White King Piece"){
-                img.classList.remove("disableOpponentsPiece")
-            }
-            if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
-                img.classList.add("disableOpponentsPiece")
-            }
-        })
+    if (!hasWinner){
+        message.textContent =`It is the ${turn} pieces' turn to play.`
+        if (turn === "white"){
 
-    }else{
-        imgs.forEach((img) =>{
-            if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
-                img.classList.remove("disableOpponentsPiece")
-            }
-            if(img.alt === "White Piece" || img.alt === "White King Piece"){
-                img.classList.add("disableOpponentsPiece")
-            }
-        })
+            imgs.forEach((img) =>{
+                if(img.alt === "White Piece" || img.alt === "White King Piece"){
+                    img.classList.remove("disableOpponentsPiece")
+                }
+                if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
+                    img.classList.add("disableOpponentsPiece")
+                }
+            })
+
+        }else{
+            imgs.forEach((img) =>{
+                if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
+                    img.classList.remove("disableOpponentsPiece")
+                }
+                if(img.alt === "White Piece" || img.alt === "White King Piece"){
+                    img.classList.add("disableOpponentsPiece")
+                }
+            })
+        }
     }
 }
 
@@ -139,13 +165,24 @@ const movePiece = (moveSelectedSquare) => {
         console.log(" hay una pieza que capturar")
         positionBoard = idToIndex[parseInt(capturedPiece.id)];
         board[positionBoard.row][positionBoard.column] = "";
-        
+
+        if(turn === "white"){
+            blackPiecesCount --;
+            checkWinner();
+        }else{
+            whitePiecesCount --;
+            checkWinner();
+        }
+        console.log(blackPiecesCount);
+        console.log(whitePiecesCount);
+
         const img = capturedPiece.children[0];
         img.classList.add("capturedPiece");
 
         setTimeout(() => {
             capturedPiece.removeChild(img);
             capturedPiece = null;
+            
         }, 900);
         console.log(board);
     }
@@ -157,6 +194,7 @@ const movePiece = (moveSelectedSquare) => {
     }
     manageGameTurns();
     console.log(board)
+    
 }
 
 
@@ -281,6 +319,8 @@ const availableMovements = (pieceElement) =>{
 const iterateOverMovementOptions = ((movementsOption, action)=>{
     // console.log(action)
     // console.log(movementsOption);
+
+
     for (let key in movementsOption){
         const object = movementsOption[key];
         const row = object.rowIndex;
@@ -322,7 +362,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
+                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
