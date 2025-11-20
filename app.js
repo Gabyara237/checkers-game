@@ -57,20 +57,20 @@ const manageGameTurns = () =>{
     if (turn === "white"){
 
         imgs.forEach((img) =>{
-            if(img.alt === "White Piece"){
+            if(img.alt === "White Piece" || img.alt === "White King Piece"){
                 img.classList.remove("disableOpponentsPiece")
             }
-            if(img.alt === "Black Piece"){
+            if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
                 img.classList.add("disableOpponentsPiece")
             }
         })
 
     }else{
         imgs.forEach((img) =>{
-            if(img.alt === "Black Piece"){
+            if(img.alt === "Black Piece" || img.alt === "Black King Piece" ){
                 img.classList.remove("disableOpponentsPiece")
             }
-            if(img.alt === "White Piece"){
+            if(img.alt === "White Piece" || img.alt === "White King Piece"){
                 img.classList.add("disableOpponentsPiece")
             }
         })
@@ -136,12 +136,17 @@ const movePiece = (moveSelectedSquare) => {
     highlight(selectedPiece,"selectedPieceElement");
 
     if (capturedPiece){
+        console.log(" hay una pieza que capturar")
         positionBoard = idToIndex[parseInt(capturedPiece.id)];
         board[positionBoard.row][positionBoard.column] = "";
-        capturedPiece.children[0].classList.add("capturedPiece");
+        
         const img = capturedPiece.children[0];
-        capturedPiece.removeChild(img);
-        capturedPiece = null;
+        img.classList.add("capturedPiece");
+
+        setTimeout(() => {
+            capturedPiece.removeChild(img);
+            capturedPiece = null;
+        }, 900);
         console.log(board);
     }
     
@@ -302,7 +307,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
             }else if(turn === "white" ){
                 
                 // Checking for possible captures
-                if(board[row][column] === "b" && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
+                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -317,7 +322,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if (board[row][column] === "b" && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
+                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
@@ -332,7 +337,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                     }
                 }
             }else if(turn === "black"){
-                if(board[row][column] === "w" && board[row+1][column+1]== ""){
+                if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
                     
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -347,7 +352,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if (board[row][column] === "w" && board[row+1][column-1]== ""){
+                if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row+1}-${column-1}`];
