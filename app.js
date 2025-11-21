@@ -193,7 +193,6 @@ const movePiece = (moveSelectedSquare) => {
             updateBoard();
             onlyKingsBoard = onlyCrownedPieces();
             
-        // }else if(selectedPiece){
         }else if (selectedPiece.alt === "White King Piece") {
             board[positionBoard.row][positionBoard.column] = "wk";
             updateBoard();
@@ -319,8 +318,8 @@ const getAvailablePositions = (row, column, piece) =>{
             if(piece === "wk"){
 
                 if(column ===7){
-                available["downLeft"] =  {rowIndex: row - 1, columnIndex: column -1 };
-                available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1};
+                    available["downLeft"] =  {rowIndex: row - 1, columnIndex: column -1 };
+                    available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1};
                 }else if (column === 0){
                     available["downLeft"] =  {rowIndex: row - 1, columnIndex: column + 1}
                     available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1}
@@ -343,8 +342,8 @@ const getAvailablePositions = (row, column, piece) =>{
             }
             if(piece === "bk"){
                 if(column===7){
-                available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
-                available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
+                    available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
+                    available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
                 }else if(column===0){
               
                     available["upLeft"] = {rowIndex: row + 1, columnIndex: column + 1};
