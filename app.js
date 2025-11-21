@@ -39,8 +39,11 @@ let onlyKingsBoard;
 const gameBoard = document.querySelector(".board");
 const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
+const buttonPlay = document.querySelector("#play");
+const rules = document.querySelector(".rules-container")
 // console.log(squares);
-const buttonReset = document.querySelector("#resetBtn");
+const resetBtn = document.querySelector("#reset-btn");
+const buttonRules = document.querySelector("#rules-btn")
 /*-------------------------------- Functions --------------------------------*/
 
 const cleanBoard = () =>{
@@ -55,7 +58,9 @@ const cleanBoard = () =>{
         );  
              
     })
+    message.classList.remove("winner");
 } 
+
 const onlyCrownedPieces = () => {
     board.forEach((rows) =>{
         rows.forEach((item)=>{
@@ -67,6 +72,15 @@ const onlyCrownedPieces = () => {
     return true;
 }
 
+const closeRules = () =>{
+    rules.classList.remove("open-window-rules");
+    rules.classList.add("close-window-rules");
+}
+
+const openWindowRules = () =>{
+    rules.classList.remove("close-window-rules");
+    rules.classList.add("open-window-rules")
+}
 
 const disableAllPieces = () => {
     squares.forEach((square)=>{
@@ -76,6 +90,7 @@ const disableAllPieces = () => {
 
 const checkWinner = () =>{
     if (blackPiecesCount === 0){
+        message.classList.add("winner")
         message.textContent = "Congratulations, the player with the white pieces has won.";
         disableAllPieces();
         return true;
@@ -100,7 +115,16 @@ const manageGameTurns = () =>{
     console.log(`hay ganador? ${hasWinner}`)
 
     if (!hasWinner){
-        message.textContent =`It is the ${turn} pieces' turn to play.`
+        
+        let pieceImage; 
+        if (turn === "white"){
+            pieceImage = infoImgsPieces[0].whiteUrl;
+        }else{
+            pieceImage = infoImgsPieces[1].blackUrl;
+        } 
+        
+        message.innerHTML = `Player's turn:    <img src="${pieceImage}" alt="${turn} piece" class="turn-piece-icon">`;
+        
         if (turn === "white"){
 
             imgs.forEach((img) =>{
@@ -223,7 +247,7 @@ const movePiece = (moveSelectedSquare) => {
             capturedPiece.removeChild(img);
             capturedPiece = null;
             
-        }, 900);
+        }, 800);
         console.log(board);
     }
     
@@ -803,9 +827,16 @@ const init = () =>{
 init()
 /*----------------------------- Event Listeners -----------------------------*/
 
+buttonPlay.addEventListener('click', () =>{
+    closeRules();
+})
+
+buttonRules.addEventListener('click', () => {
+    openWindowRules();
+})
 
 gameBoard.addEventListener('click', (event) =>{
-     handleClick(event);
+    handleClick(event);
 
 })
 
