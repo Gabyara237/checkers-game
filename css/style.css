@@ -80,8 +80,6 @@ img {
 
 .disableUnselectedPiece, .disableOpponentsPiece, .disableAllPieces {
     pointer-events: none !important;
-    opacity: 0.8;
-    
 }
 .capturedPiece {
     animation: remove 0.5s ease-out forwards;
