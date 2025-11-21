@@ -349,8 +349,6 @@ const getAvailablePositions = (row, column, piece) =>{
 }
 
 
-
-
 const availableMovements = (pieceElement) =>{ 
 
     let idElement = pieceElement.id
@@ -407,7 +405,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
             if(turn === "white" ){
                     
                 // Checking for possible captures
-                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 )   && board[row-1][column+1]== ""){
+                if( ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && (board[row][column] === "b" || board[row][column] === "bk") && board[row-1][column+1]== ""){
                         
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -416,7 +414,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         posiblesCapturas.push(id);
                     }
                 } 
-                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== "" && capturedPiece ===null){
+                if (((row-1) >= 0) && (column-1 >=0 ) && (board[row][column] === "b" ||board[row][column] === "bk") && board[row-1][column-1]== "" && capturedPiece ===null){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row-1}-${column-1}`];
@@ -424,8 +422,25 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         posiblesCapturas.push(id);
                     }
                 }
+                if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "wk"){
+                    
+                    if((row+1 < 8) && (column+1 < 8) && (row-1 >= 0) && (column-1 >= 0) && (board[row][column] === "b" || board[row][column] === "bk") && board[row+1][column+1] == ""){
+                        if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1){
+                            id = indexsToId[`${row+1}-${column+1}`];
+                            posiblesCapturas.push(id);
+                        }
+                    }
+                    
+                    if((row+1 < 8) && (column-1 >= 0) && (row-1 >= 0) && (column+1 < 8) && (board[row][column] === "b" || board[row][column] === "bk") && board[row+1][column-1] == ""){
+                            if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1){
+                                id = indexsToId[`${row+1}-${column-1}`];
+                                posiblesCapturas.push(id);
+                            }
+                        }
+                    }
+
             }else if(turn === "black"){
-                if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                if((row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8) && (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" ){
                         
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
                         console.log("Capture available right");
@@ -434,7 +449,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                     posiblesCapturas.push(id);
                     }
                 } 
-                if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                if ((row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)&& (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
                         console.log("Capture available left");
                         id = indexsToId[`${row+1}-${column-1}`];
@@ -443,12 +458,29 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                     }
                 }
 
+                if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "bk"){
+                   
+                    if(((row-1) >= 0) && (column+1 < 8) && ((row+1) < 8) && (column-1 >= 0) && (board[row][column] === "w" || board[row][column] === "wk") && board[row-1][column+1] == ""){
+                        if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1){
+                            id = indexsToId[`${row-1}-${column+1}`];
+                            posiblesCapturas.push(id);
+                        }
+                    }
+    
+                    if(((row-1) >= 0) && (column-1 >= 0) && (board[row][column] === "w" || board[row][column] === "wk") && board[row-1][column-1] == ""){
+                        if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1){
+                            id = indexsToId[`${row-1}-${column-1}`];
+                            posiblesCapturas.push(id);
+                        }
+                    }
+                }
+
             } 
                     
         }
     }
 
-    console.log(`El tamano del array es: ${posiblesCapturas.length}`);
+    // console.log(`El tamano del array es: ${posiblesCapturas.length}`);
 
     for (let key in movementsOption){
         const object = movementsOption[key];
@@ -480,7 +512,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
             if(turn === "white" ){
                 if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "wk"){
                     console.log(`tenemos una reina blanca`)
-                    if((board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                    if((row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8) && (board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column+1]== "" ){
                         
                         if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
                             id = indexsToId[`${row+1}-${column+1}`];
@@ -495,7 +527,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         }
                     } 
 
-                    if ((board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                    if ((row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0) && (board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column-1]== "" ){
                         if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
                             id = indexsToId[`${row+1}-${column-1}`];
                             
@@ -511,7 +543,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 
                 }
 
-                if((board[row][column] === "b" || board[row][column] === "bk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && board[row-1][column+1]== ""){
+                if(((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && (board[row][column] === "b" || board[row][column] === "bk") && board[row-1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                         id = indexsToId[`${row-1}-${column+1}`];
@@ -525,7 +557,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if ((board[row][column] === "b" ||board[row][column] === "bk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
+                if (((row-1) >= 0) && (column-1 >=0 )&&(board[row][column] === "b" || board[row][column] === "bk") &&  board[row-1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                         id = indexsToId[`${row-1}-${column-1}`];
                         
@@ -541,7 +573,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
             }else if(turn === "black"){
 
                 if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "bk"){
-                    if((board[row][column] === "w" || board[row][column] === "wk") && ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && board[row-1][column+1]== ""){
+                    if(((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && (board[row][column] === "w" || board[row][column] === "wk") && board[row-1][column+1]== ""){
                     
                         if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
                             id = indexsToId[`${row-1}-${column+1}`];
@@ -555,7 +587,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                             console.log(movementOptions);
                         }
                     } 
-                    if ((board[row][column] === "w" ||board[row][column] === "wk") && ((row-1) >= 0) && (column-1 >=0 ) &&  board[row-1][column-1]== ""){
+                    if (((row-1) >= 0) && (column-1 >=0 ) && (board[row][column] === "w" ||board[row][column] === "wk") &&  board[row-1][column-1]== ""){
                         if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
                             id = indexsToId[`${row-1}-${column-1}`];
                             
@@ -568,11 +600,9 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                             console.log(movementOptions);
                         }
                     }
-                
-                
-                
+
                 }
-                if((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" && (row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8)){
+                if((row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8) && (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== ""){
                     
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
                         id = indexsToId[`${row+1}-${column+1}`];
@@ -586,7 +616,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                         console.log(movementOptions);
                     }
                 } 
-                if ((board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== "" && (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)){
+                if ( (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)&& (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
                         id = indexsToId[`${row+1}-${column-1}`];
                         
@@ -643,9 +673,6 @@ const highlight = (element,toBeHighlighted) => {
     
 }
 
-const checkPieceCaptures = () =>{
-
-}
 
 const handleClick = (event) => {
     let pieceElement = event.target;
@@ -668,9 +695,6 @@ const handleClick = (event) => {
             permittedIds = disableUnselectedPieces();
         }
         
-        // Check for crowning 
-        // Check if there is a winner
-        // Check if there is a tie
     }
 
     if(event.target.classList.contains("movedOption")){
@@ -683,7 +707,6 @@ const handleClick = (event) => {
         
     }
 }
-
 
 const initializeBoard = () => {
 
