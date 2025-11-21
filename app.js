@@ -41,11 +41,11 @@ const message = document.querySelector("#message");
 const squares = document.querySelectorAll(".squares");
 const buttonPlay = document.querySelector("#play");
 const rules = document.querySelector(".rules-container")
-// console.log(squares);
 const resetBtn = document.querySelector("#reset-btn");
 const buttonRules = document.querySelector("#rules-btn")
 /*-------------------------------- Functions --------------------------------*/
 
+// Delete all classes and img from the board and message
 const cleanBoard = () =>{
     
     squares.forEach((square)=>{
@@ -61,6 +61,7 @@ const cleanBoard = () =>{
     message.classList.remove("winner");
 } 
 
+// Check if there are only crowned pieces on the board
 const onlyCrownedPieces = () => {
     board.forEach((rows) =>{
         rows.forEach((item)=>{
@@ -72,6 +73,7 @@ const onlyCrownedPieces = () => {
     return true;
 }
 
+
 const closeRules = () =>{
     rules.classList.remove("open-window-rules");
     rules.classList.add("close-window-rules");
@@ -82,37 +84,47 @@ const openWindowRules = () =>{
     rules.classList.add("open-window-rules")
 }
 
+
 const disableAllPieces = () => {
     squares.forEach((square)=>{
         square.classList.add("disableAllPieces");
     })
 } 
 
+// Check if there is a winner in the game
 const checkWinner = () =>{
     if (blackPiecesCount === 0){
-        message.classList.add("winner")
+        message.classList.add("winner");
         message.textContent = "Congratulations, the player with the white pieces has won.";
         disableAllPieces();
         return true;
 
     }else if (whitePiecesCount === 0){
-        message.textContent = "Congratulations, the player with the black pieces has won."
+        message.classList.add("winner");
+        message.textContent = "Congratulations, the player with the black pieces has won.";
         disableAllPieces();
         return true;
     }
     return false;
 }
 
- const displayTieMessage = () =>{
-    message.textContent = "There is no winner in this game; it was a tie";
+
+const displayTieMessage = () =>{
+    message.classList.add("tie"); 
+    message.textContent = "There is no winner in this game, it was a tie";
     disableAllPieces();
+    tie = true;
  };
  
 
+// Responsible for managing player turns
 const manageGameTurns = () =>{
     const imgs = document.querySelectorAll(".piece"); 
     const hasWinner = checkWinner();
-    console.log(`hay ganador? ${hasWinner}`)
+
+    if (tie) {
+        return; 
+    }
 
     if (!hasWinner){
         
@@ -149,6 +161,7 @@ const manageGameTurns = () =>{
     }
 }
 
+// Check for crowning
 const checkCrowning = (row) =>{
     if(turn === "white"){
         if (row===0){
@@ -162,16 +175,14 @@ const checkCrowning = (row) =>{
     return false;
 }
 
-
+// Function responsible for managing the movement of pieces
 const movePiece = (moveSelectedSquare) => {
-    console.log(board)
+
     moveSelectedSquare.appendChild(selectedPiece);
     let positionBoard = idToIndex[parseInt(selectedPiece.id)];
     board[positionBoard.row][positionBoard.column] = "";
     
     selectedPiece.id = moveSelectedSquare.id;
-    // console.log(selectedPiece.id);
-    console.log(`Selected Piece: ${selectedPiece.alt}`)
  
    positionBoard = idToIndex[parseInt(selectedPiece.id)];
 
@@ -207,8 +218,7 @@ const movePiece = (moveSelectedSquare) => {
             board[positionBoard.row][positionBoard.column] = "b";
         }
     }
-    console.log(board);
-    // console.log(positionBoard);
+  
     iterateOverMovementOptions(movementOptions,"remove");
     disableUnselectedPieces();
     highlight(selectedPiece,"selectedPieceElement");
@@ -226,7 +236,7 @@ const movePiece = (moveSelectedSquare) => {
 
 
     if (capturedPiece){
-        console.log(" hay una pieza que capturar")
+    
         positionBoard = idToIndex[parseInt(capturedPiece.id)];
         board[positionBoard.row][positionBoard.column] = "";
 
@@ -237,8 +247,7 @@ const movePiece = (moveSelectedSquare) => {
             whitePiecesCount --;
             checkWinner();
         }
-        console.log(blackPiecesCount);
-        console.log(whitePiecesCount);
+     
 
         const img = capturedPiece.children[0];
         img.classList.add("capturedPiece");
@@ -247,8 +256,8 @@ const movePiece = (moveSelectedSquare) => {
             capturedPiece.removeChild(img);
             capturedPiece = null;
             
-        }, 800);
-        console.log(board);
+        }, 500);
+       
     }
     
     if(turn === "white"){
@@ -257,11 +266,10 @@ const movePiece = (moveSelectedSquare) => {
         turn = "white";
     }
     manageGameTurns();
-    console.log(board)
     
 }
 
-
+// Disable the option to click on squares that are not movement options
 const disableUnselectedPieces = () => {
     if(selectedPiece !== ""){
         let permittedIds = []
@@ -273,7 +281,7 @@ const disableUnselectedPieces = () => {
             permittedIds.push(id);
         }
         permittedIds.push(parseInt(selectedPiece.id));
-        // console.log(permittedIds)
+     
         squares.forEach((square) => {
             if(!(permittedIds.includes(parseInt(square.id))) ){
                 square.classList.add("disableUnselectedPiece");
@@ -289,23 +297,27 @@ const disableUnselectedPieces = () => {
     }
 }
 
+// Obtiene todas las posiciones disponibles segun la pieza seleccionada
 const getAvailablePositions = (row, column, piece) =>{
     let available = {}
-    console.log(row)
+ 
         if (piece === "b" || piece === "wk"){
             if(column===0){
+
                 available["leftSide"] = {rowIndex: row + 1, columnIndex: column + 1};
                 available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
+
             }else if(column===7){
-                console.log("entre")
+
                 available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1};
                 available["rightSide"] = {rowIndex: row + 1, columnIndex: column - 1};
             }else{
-                console.log("entre3")
+           
                 available["leftSide"] = {rowIndex: row + 1, columnIndex: column - 1};
                 available["rightSide"] = {rowIndex: row + 1, columnIndex: column + 1};
             }
             if(piece === "wk"){
+
                 if(column ===7){
                 available["downLeft"] =  {rowIndex: row - 1, columnIndex: column -1 };
                 available["downRight"] = {rowIndex: row - 1, columnIndex: column - 1};
@@ -317,6 +329,7 @@ const getAvailablePositions = (row, column, piece) =>{
                     available["downRight"] = {rowIndex: row - 1, columnIndex: column + 1}
                 }
             }
+
         }else if (piece === "w" || piece === "bk"){
             if(column ===0){
                 available["leftSide"] =  {rowIndex: row - 1, columnIndex: column + 1};
@@ -333,33 +346,30 @@ const getAvailablePositions = (row, column, piece) =>{
                 available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
                 available["upRight"] = {rowIndex: row + 1, columnIndex: column - 1};
                 }else if(column===0){
-                    console.log("entre")
+              
                     available["upLeft"] = {rowIndex: row + 1, columnIndex: column + 1};
                     available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
+
                 }else{
-                    console.log("entre3")
+              
                     available["upLeft"] = {rowIndex: row + 1, columnIndex: column - 1};
                     available["upRight"] = {rowIndex: row + 1, columnIndex: column + 1};
                 }
             }
         }
-        console.log(available);
+
     return available;
     
 }
 
-
 const availableMovements = (pieceElement) =>{ 
 
-    let idElement = pieceElement.id
-    // console.log(idElement)
     let indexBoard = idToIndex[parseInt(pieceElement.id)]
-    // console.log(indexBoard);
-    // console.log(idToIndex[parseInt(pieceElement.id)])
+
     let rowIndex = indexBoard.row;
     let columnIndex = indexBoard.column;
     let playerPiece = board[rowIndex][columnIndex];
-    // console.log(playerPiece)
+ 
     let availablePositions = {}
     if (playerPiece === "b" || playerPiece === "wk" ){
         if(playerPiece === "b" || playerPiece === "wk"){
@@ -378,10 +388,10 @@ const availableMovements = (pieceElement) =>{
 
 }
 
+// Function that iterates over the movementOptions object to add or remove the movedOption class from the squares elements.
+ 
 const iterateOverMovementOptions = ((movementsOption, action)=>{
 
-    // console.log(action)
-    // console.log(movementsOption);
 
     let posiblesCapturas = [];
 
@@ -396,19 +406,15 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
         if(selectedPiece){
             const idSelectPiece = selectedPiece.id;
             indexBoardSelectPieces = idToIndex[idSelectPiece];
-            console.log(indexBoardSelectPieces); 
         }
-
-        // console.log(board[row][column])
 
         if(action === "add"){
             if(turn === "white" ){
                     
-                // Checking for possible captures
                 if( ((row-1) >= 0) && (column+1 < 8 ) && ((row + 1) < 8 ) && (column-1 >= 0 ) && (board[row][column] === "b" || board[row][column] === "bk") && board[row-1][column+1]== ""){
                         
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column-1 ){
-                        console.log("Capture available right");
+                       
                         id = indexsToId[`${row-1}-${column+1}`];
                             
                         posiblesCapturas.push(id);
@@ -416,9 +422,8 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 } 
                 if (((row-1) >= 0) && (column-1 >=0 ) && (board[row][column] === "b" ||board[row][column] === "bk") && board[row-1][column-1]== "" && capturedPiece ===null){
                     if(indexBoardSelectPieces.row === row+1 && indexBoardSelectPieces.column === column+1 ){
-                        console.log("Capture available left");
-                        id = indexsToId[`${row-1}-${column-1}`];
-                            
+                   
+                        id = indexsToId[`${row-1}-${column-1}`];  
                         posiblesCapturas.push(id);
                     }
                 }
@@ -443,7 +448,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 if((row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8) && (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column+1]== "" ){
                         
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
-                        console.log("Capture available right");
+                
                         id = indexsToId[`${row+1}-${column+1}`];
                             
                     posiblesCapturas.push(id);
@@ -451,9 +456,8 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 } 
                 if ((row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)&& (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== ""){
                     if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column+1 ){
-                        console.log("Capture available left");
-                        id = indexsToId[`${row+1}-${column-1}`];
-                            
+                
+                        id = indexsToId[`${row+1}-${column-1}`]; 
                         posiblesCapturas.push(id);
                     }
                 }
@@ -480,8 +484,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
         }
     }
 
-    // console.log(`El tamano del array es: ${posiblesCapturas.length}`);
-
     for (let key in movementsOption){
         const object = movementsOption[key];
         const row = object.rowIndex;
@@ -493,16 +495,13 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
         if(selectedPiece){
             const idSelectPiece = selectedPiece.id;
             indexBoardSelectPieces = idToIndex[idSelectPiece];
-            console.log(indexBoardSelectPieces); 
         }
 
-        // console.log(board[row][column])
         if(action === "add"){
 
             if(posiblesCapturas.length==0){
                 if(board[row][column] === ""){
                     id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
-                    console.log(id)
                     const squaresAvailableToMove = document.getElementById(id);
                     squaresAvailableToMove.classList.add("movedOption");
                     
@@ -511,7 +510,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
             if(turn === "white" ){
                 if(board[indexBoardSelectPieces.row][indexBoardSelectPieces.column] === "wk"){
-                    console.log(`tenemos una reina blanca`)
                     if((row-1 >=0) && (column-1 >=0) && (row+1<8) && (column+1 <8) && (board[row][column] === "b" || board[row][column] === "bk" ) && board[row+1][column+1]== "" ){
                         
                         if(indexBoardSelectPieces.row === row-1 && indexBoardSelectPieces.column === column-1 ){
@@ -523,7 +521,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                             const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                             capturedPiece = document.getElementById(idCapturedPiece);
-                            console.log(movementOptions);
                         }
                     } 
 
@@ -537,7 +534,6 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                             const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                             capturedPiece = document.getElementById(idCapturedPiece);
-                            console.log(movementOptions);
                         }
                     }
                 
@@ -554,7 +550,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                         const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                         capturedPiece = document.getElementById(idCapturedPiece);
-                        console.log(movementOptions);
+                  
                     }
                 } 
                 if (((row-1) >= 0) && (column-1 >=0 )&&(board[row][column] === "b" || board[row][column] === "bk") &&  board[row-1][column-1]== ""){
@@ -567,7 +563,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                         const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                         capturedPiece = document.getElementById(idCapturedPiece);
-                        console.log(movementOptions);
+                  
                     }
                 }
             }else if(turn === "black"){
@@ -584,7 +580,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                             const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                             capturedPiece = document.getElementById(idCapturedPiece);
-                            console.log(movementOptions);
+                         
                         }
                     } 
                     if (((row-1) >= 0) && (column-1 >=0 ) && (board[row][column] === "w" ||board[row][column] === "wk") &&  board[row-1][column-1]== ""){
@@ -597,7 +593,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                             const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                             capturedPiece = document.getElementById(idCapturedPiece);
-                            console.log(movementOptions);
+                         
                         }
                     }
 
@@ -613,7 +609,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                         const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                         capturedPiece = document.getElementById(idCapturedPiece);
-                        console.log(movementOptions);
+                      
                     }
                 } 
                 if ( (row+1<8) && (column+1 <8) && (row-1>=0) && (column-1 >=0)&& (board[row][column] === "w" || board[row][column] === "wk" ) && board[row+1][column-1]== ""){
@@ -626,7 +622,7 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
 
                         const idCapturedPiece = indexsToId[`${row}-${column}`]; 
                         capturedPiece = document.getElementById(idCapturedPiece);
-                        console.log(movementOptions);
+                       
                     }
                 }
 
@@ -634,18 +630,18 @@ const iterateOverMovementOptions = ((movementsOption, action)=>{
                 
         }else if(action === "remove"){
             id =  indexsToId[`${object.rowIndex}-${object.columnIndex}`];
-            // console.log(`remove : ${id}`)
+          
             const squaresAvailableToMove = document.getElementById(id);
             squaresAvailableToMove.classList.remove("movedOption");
-            // console.log(squaresAvailableToMove);
+           
         }
     }
 })
 
 
-
+// Add and remove classes to highlight available movements
 const highlight = (element,toBeHighlighted) => {
-//    console.log(toBeHighlighted);
+
     if (toBeHighlighted === "selectedPieceElement"){ 
         
         if (element.id === selectedPiece.id ){
@@ -676,22 +672,18 @@ const highlight = (element,toBeHighlighted) => {
 
 const handleClick = (event) => {
     let pieceElement = event.target;
-    // console.log(pieceElement)
+
     if (pieceElement.classList.contains("piece")){
-        // Function that adds a class to the selected piece so that it stands out
+      
         highlight(pieceElement,"selectedPieceElement");
 
-        // Function that identifies the available moves for the selected piece
         if(pieceElement.classList.contains("selectedPiece")){
             movementOptions = availableMovements(pieceElement);
-            console.log(movementOptions)
-            // console.log(movementOptions);
+           
         }
-        //Check for piece captures
         
         if (movementOptions){
             highlight(movementOptions, "availableMoves");
-            // Function that disables the selection of other pieces when a piece has already been selected
             permittedIds = disableUnselectedPieces();
         }
         
@@ -700,7 +692,6 @@ const handleClick = (event) => {
     if(event.target.classList.contains("movedOption")){
                 
         const moveSelectedSquare = event.target;
-        // console.log(moveSelectedSquare)
         movePiece(moveSelectedSquare);
         selectedPiece = "";
         movementOptions = null;
@@ -731,7 +722,7 @@ const initializeBoard = () => {
             }
         })
     })  
-    // console.log(board);  
+
 }
 
 
@@ -740,15 +731,13 @@ const convertIndexesToId = (rowIndex,columnIndex) => {
     const id = rowIndex * 8 + columnIndex
     idToIndex[id]= {'row':rowIndex , 'column':columnIndex}
     indexsToId[`${rowIndex}-${columnIndex}`] = id;
-    // console.log(indexsToId);
-    // console.log(idToIndex);
+
     return id;
 }
 
 const createImgElement = (piece, indexSquare) => {
     const imgPiece = document.createElement("img");
     if (piece === "b"){
-        // console.log("test")
         imgPiece.src = infoImgsPieces[1].blackUrl;
         imgPiece.alt =  infoImgsPieces[1].blackAlt;
         
@@ -788,7 +777,6 @@ const updateBoard = () => {
                 if(piece === "b"){
                     img.setAttribute("url",infoImgsPieces[1].blackUrl);
                     img.setAttribute("alt",infoImgsPieces[1].blackAlt);
-                    console.log(img)
 
                 }else if(piece === "w"){
                     img.setAttribute("url",infoImgsPieces[0].whiteUrl);
@@ -806,7 +794,6 @@ const updateBoard = () => {
             })
         })
     }
-    // console.log(imgElementCreated)
 }
 
 
@@ -816,7 +803,7 @@ const render = () =>{
 
 const init = () =>{
     cleanBoard();
-    // console.log("test");
+ 
     board = [
     ["","","","","","","",""],
     ["","","","","","","",""],

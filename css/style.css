@@ -84,8 +84,9 @@ img {
     
 }
 .capturedPiece {
-    animation: remove 0.9s ease-out forwards;
+    animation: remove 0.5s ease-out forwards;
 }
+
 #reset-btn, #rules-btn{
     cursor: pointer;
     padding: 10px;
@@ -97,7 +98,7 @@ img {
 #reset-btn:hover ,  #rules-btn:hover{
    transform: scale(1.2);
 }
-.winner {
+.winner, .tie {
   animation: pulse 2s infinite;
 }
 
